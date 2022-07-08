@@ -35,6 +35,19 @@ void error(char *fmt, ...) {
     fprintf(stderr, "\n");
     exit(1);
 }
+char *user_input;
+void error_at(char *loc/* location */, char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+
+    int pos = loc - user_input; /* ポインタの差をとって、エラー箇所が先頭から何バイト目かわかる */
+    fprintf(stderr, "%s\n", user_input);
+    fprintf(stderr, "%*s", pos, " "); // pos個の空白を出力
+    fprintf(stderr, "^ ");
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    exit(1);
+}
 
 bool consume(char op) {
     if (token->kind != TK_RESREVED || token->str[0] != op) return false;
@@ -43,12 +56,14 @@ bool consume(char op) {
 }
 void expect(char op) {
     if (token->kind != TK_RESREVED || token->str[0] != op)
-        error("Not '%c'", op);
+        // error("Not '%c'", op);
+        error_at(token->str, "expected %c", op);
     token = token->next;
 }
 int expect_number() {
     if (token->kind != TK_NUM)
-        error("This is not a number");
+        // error("This is not a number");
+        error_at(token->str, "expected a number");
     int val = token->val;
     token = token->next;
     return val;
@@ -69,7 +84,8 @@ Token *new_token(TokenKind kind, Token *cur/* current token */, char *str) {
 }
 
 
-Token *tokenize(char *p) {
+Token *tokenize(/* char *p */) {
+    char *p = user_input;
     Token head;
     head.next = NULL;
     Token *cur = &head;
@@ -89,7 +105,8 @@ Token *tokenize(char *p) {
             continue;
         }
 
-        error("Cannot tokenize");
+        // error("Cannot tokenize");
+        error_at(p, "expected a number");
     }
     
     new_token(TK_EOF, cur, p);
@@ -104,7 +121,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    token = tokenize(argv[1]);
+    user_input = argv[1];
+    token = tokenize();
     /*
     strtol ... "str to long" (str, pointer, base)
         文字列 (C では char* という) の最初から読んでいって、
