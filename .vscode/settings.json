@@ -1,0 +1,6 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "[makefile]": {
+        "editor.insertSpaces": false
+    }
+}
