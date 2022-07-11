@@ -1,5 +1,6 @@
-use std::str::Chars;
+use std::{/*str::Chars,*/ fmt::Display};
 
+/*
 pub fn strtol(chars: &mut Chars) -> (Option<u32>, Option<char>) {
     let mut digits = Vec::<u32>::new();
     loop {
@@ -30,8 +31,9 @@ pub fn strtol(chars: &mut Chars) -> (Option<u32>, Option<char>) {
         }
     }
 }
+*/
 
-pub fn report_unexpected_token(token: char) {
-    println!("unecpected token: {}", token);
+pub fn report_unexpected_token<T: Display>(token: T) {
+    println!("unecpected token: \'{}\'", token);
     panic!();
 }
