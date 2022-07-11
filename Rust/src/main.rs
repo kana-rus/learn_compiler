@@ -11,12 +11,12 @@ use utils::{
 
 fn main() {
     let mut input: Chars;
-        let (mut args_buff, str_buff): (Vec<String>, String);
-        let args = env::args().collect::<Vec<String>>();
-        if args.len() != 2 { println!("only 1 argument is need!"); panic!(); }
-        args_buff = args;
-        str_buff = args_buff.pop().unwrap(); drop(args_buff);
-        input = str_buff.chars();
+        let buff; input = {
+        let mut args = env::args();
+        buff = args.nth(1).expect("input is in need!");
+        if args.next().is_some() { println!("only 1 argument is in need!"); panic!(); }
+        buff.chars()
+    };
 
     let (mut num, mut next_char): (u32, Option<char>);
 
