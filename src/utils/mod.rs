@@ -58,10 +58,48 @@ fn tokenize(input: String) -> IntoIter<Token> {
 }
 
     fn parse(tokens: IntoIter<Token>) -> Tree;
-    fn evaluate(tree: Tree) -> Int;
+
+    fn evaluate(tree: Tree) -> Int {
+        let (op, lh, rh) = (
+            tree.root.elem,
+            tree.root.left,
+            tree.root.right
+        );
+        calc(op, lh, rh)
+    }
 }
-    // pub fn parse(tokens: Iter<Token>) -> Tree;
-    // pub fn evaluate(tree: Tree) -> Int;
+fn calc(op: Elem, lh: Link<Node>, rh: Link<Node>) -> Int {
+    match op {
+        Elem::Num(number) => number,
+        Elem::Ope(operator) => {
+            let (lh, rh) = (
+                lh.expect("left Node not exists"),
+                rh.expect("right Node not exists")
+            );
+            let left_num = match lh.elem {
+                Elem::Num(number) => number,
+                Elem::Ope(lop) => calc(
+                    Elem::Ope(lop), lh.left, lh.right
+                ),
+            };
+            let right_num = match rh.elem {
+                Elem::Num(number) => number,
+                Elem::Ope(rop) => calc(
+                    Elem::Ope(rop), rh.left, rh.right
+                ),
+            };
+
+            match operator {
+                '+' => left_num + right_num,
+                '-' => left_num - right_num,
+                '*' => left_num * right_num,
+                '/' => left_num / right_num,
+                 _  => { println!("{} is not Ope", operator); panic!(); },
+            }
+        },
+    }
+}
+
 
 #[derive(Debug)]
 pub struct Tree {
@@ -70,7 +108,7 @@ pub struct Tree {
     pub fn new() -> Tree {
         Tree {
             root: Node {
-                element: Element::Num(0),
+                elem: Elem::Num(0),
                 left: None,
                 right: None,
             }
@@ -80,26 +118,42 @@ pub struct Tree {
 
 #[derive(Debug)]
 pub struct Node {
-    pub element: Element,
+    pub elem: Elem,
     pub left: Link<Node>,
     pub right: Link<Node>,
+} impl Node {
+
+    pub fn insert_left(&mut self, num: Int) {
+        self.left = link(Node {
+            elem: Elem::Num(num),
+            left: None,
+            right: None,
+        })
+    }
+    pub fn insert_right(&mut self, num: Int) {
+        self.right = link(Node {
+            elem: Elem::Num(num),
+            left: None,
+            right: None,
+        })
+    }
 }
 
 #[derive(Debug)]
-pub enum Element {
+pub enum Elem {
     Num(Int),
     Ope(char),
-} impl Element {
-    pub fn unwrap_num(self) -> Int {
+} impl Elem {
+    pub fn expect_num(self) -> Int {
         match self {
-            Element::Num(number) => number,
-            Element::Ope(_) => panic!(),
+            Elem::Num(number) => number,
+            Elem::Ope(char) => {println!("{} is not Num", char); panic!();},
         }
     }
     pub fn unwrap_ope(self) -> char {
         match self {
-            Element::Num(_) => panic!(),
-            Element::Ope(operator) => operator,
+            Elem::Num(num) => {println!("{} is not Ope", num); panic!();},
+            Elem::Ope(operator) => operator,
         }
     }
 }
@@ -110,16 +164,20 @@ pub enum Token {
     PrimOpen,
     PrimClose,
 } impl Token {
-    pub fn unwrap_num(&self) -> Option<Int> {
+    pub fn expect_num(&self) -> Int {
         match self {
-            Token::Num(number) => Some(*number),
-            _ => None,
+            Token::Num(number) => *number,
+            Token::Ope(ope) => { println!("\"{}\" is not Num", ope); panic!(); },
+            Token::PrimOpen => { println!("\"(\" is not Num"); panic!(); },
+            Token::PrimClose => { println!("\")\" is not Num"); panic!(); },
         }
     }
-    pub fn unwrap_ope(&self) -> Option<char> {
+    pub fn expect_ope(&self) -> char {
         match self {
-            Token::Ope(operator) => Some(*operator),
-            _ => None,
+            Token::Ope(operator) => *operator,
+            Token::Num(num) => { println!("{} is not Ope", num); panic!(); },
+            Token::PrimOpen => { println!("\"(\" is not Ope"); panic!(); },
+            Token::PrimClose => { println!("\")\" is not Ope"); panic!(); },
         }
     }
 }

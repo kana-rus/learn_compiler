@@ -8,71 +8,24 @@ impl Process for Parser {
     fn parse(mut tokens: std::collections::vec_deque::IntoIter<Token>) -> Tree {
         let mut tree = Tree::new();
 
-        let first = tokens.next().expect("input is required")
-                                 .unwrap_num()
-                                 .expect("firat token has to be Num");
-        tree.root.element = Element::Num(first);
+        let first = tokens.next().expect("input is required").expect_num();
+        tree.root.elem = Elem::Num(first);
 
         while let Some(token) = tokens.next() {
-            let op = token.unwrap_ope().expect(&format!("unexpected token: {:?}", token));
+            let op = token.expect_ope();
             tree.root = Node {
-                element: Element::Ope(op),
+                elem: Elem::Ope(op),
                 left: link(tree.root),
                 right: None,
             };
-            let right = tokens.next().expect("right Num not exists")
-                            .unwrap_num().expect("not Num");
-            tree.root.right = link(Node {
-                element: Element::Num(right),
-                left: None,
-                right: None
-            })
+            let right = tokens.next().expect("right Num not exists").expect_num();
+            tree.root.insert_right(right);
         }
 
         tree
     }
-
-    fn evaluate(tree: Tree) -> Int {
-        let (op, lh, rh) = (
-            tree.root.element,
-            tree.root.left,
-            tree.root.right
-        );
-        calc(op, lh, rh)
-    }
 }
 
-fn calc(op: Element, lh: Link<Node>, rh: Link<Node>) -> Int {
-    match op {
-        Element::Num(number) => number,
-        Element::Ope(operator) => {
-            let (lh, rh) = (
-                lh.expect("left Node not exists"),
-                rh.expect("right Node not exists")
-            );
-            let left_num = match lh.element {
-                Element::Num(number) => number,
-                Element::Ope(lop) => calc(
-                    Element::Ope(lop), lh.left, lh.right
-                ),
-            };
-            let right_num = match rh.element {
-                Element::Num(number) => number,
-                Element::Ope(rop) => calc(
-                    Element::Ope(rop), rh.left, rh.right
-                ),
-            };
-
-            match operator {
-                '+' => left_num + right_num,
-                '-' => left_num - right_num,
-                '*' => left_num * right_num,
-                '/' => left_num / right_num,
-                 _  => panic!(),
-            }
-        },
-    }
-}
 
 
 
