@@ -78,7 +78,7 @@ fn calc(op: Element, lh: Link<Node>, rh: Link<Node>) -> Int {
 
 
 #[test]
-fn plus_15_27_41_66() {
+fn _15_plus_27_plus_41_plus_66() {
     assert_eq!(
         Parser::evaluate(
             Parser::parse(
@@ -100,11 +100,13 @@ fn _44_minus_28_plus_5555_minus_63() {
     );
 }
 
-fn main() { /* printing debug */
+fn main() { /* printing, panicing debug */
     let tokens = Parser::tokenize(String::from("1 + 2 + 3"));
     println!("{:?}", tokens);
     let tree = Parser::parse(tokens);
     println!("{:?}", tree);
     let value = Parser::evaluate(tree);
     println!("{}", value);
+
+    Parser::parse(Parser::tokenize(String::from(" + 102")));//shold panic
 }
