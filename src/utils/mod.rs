@@ -16,32 +16,49 @@ pub fn build_from(degits: &VecDeque<Int>) -> Int {
     degits.iter().fold(0, |a, b| 10*a + b)
 }
 
-pub fn tokenize(input: String) -> IntoIter<Token> {
+
+pub struct Parser;
+pub trait Process {
+fn tokenize(input: String) -> IntoIter<Token> {
     let mut input = input.chars();
     let mut digits = VecDeque::<Int>::new();
     let mut ret = VecDeque::<Token>::new();
 
-    while let Some(char) = input.next() {
-        match char.to_digit(10) {
-            Some(d) => {
-                digits.push_back(d);
+    let mut current = input.next();
+    loop {
+        match current {
+            Some(char) => {
+                match char.to_digit(10) {
+                    Some(d) => {
+                        digits.push_back(d);
+                    },
+                    None => {
+                        if !digits.is_empty() {
+                            ret.push_back(Token::Num(build_from(&digits)));
+                            digits.clear();
+                        }
+                        match char {
+                            '+' | '-' | '*' | '/' => ret.push_back(Token::Ope(char)),
+                            '('                   => ret.push_back(Token::PrimOpen),
+                            ')'                   => ret.push_back(Token::PrimClose),
+                            ' '                   => (),
+                             _                    => { println!("unexpected: {}", char); panic!(); }
+                        }
+                    },
+                }
+                current = input.next();
             },
             None => {
-                if !digits.is_empty() {
-                    ret.push_back(Token::Num(build_from(&digits)));
-                    digits.clear();
-                }
-                match char {
-                    '+' | '-' | '*' | '/' => ret.push_back(Token::Ope(char)),
-                    '('                   => ret.push_back(Token::PrimOpen),
-                    ')'                   => ret.push_back(Token::PrimClose),
-                    ' '                   => continue,
-                     _                    => { println!("unexpected: {}", char); panic!(); }
-                }
+                if !digits.is_empty() { ret.push_back(Token::Num(build_from(&digits))); }
+                break;
             },
         }
     }
-    ret.into_iter()//.iter()
+    ret.into_iter()
+}
+
+    fn parse(tokens: IntoIter<Token>) -> Tree;
+    fn evaluate(tree: Tree) -> Int;
 }
     // pub fn parse(tokens: Iter<Token>) -> Tree;
     // pub fn evaluate(tree: Tree) -> Int;

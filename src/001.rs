@@ -6,7 +6,7 @@ mod utils; use utils::*;
  * with NO SPACE
  * */
 
-// impl Parser for Tree {
+impl Process for Parser {
     fn parse(mut tokens: std::collections::vec_deque::IntoIter<Token>) -> Tree {
         let mut tree = Tree::new();
         let mut current = tokens.next();
@@ -54,25 +54,25 @@ mod utils; use utils::*;
              _  => panic!(),
         }
     }
-// }
+}
 
 
 
 
 #[test]
 fn plus_314_2345() {
-    let tokens = tokenize(String::from(" 313 +  2345  "));
-    let parsed_tree = parse(tokens);
+    let tokens = Parser::tokenize(String::from(" 313 +  2345  "));
+    let parsed_tree = Parser::parse(tokens);
     assert_eq!(
-        evaluate(parsed_tree),
+        Parser::evaluate(parsed_tree),
         2658
     );
 }
 
 fn main() { /* for printing debug */
-    let tokens = tokenize(String::from(" 313 +  2345  "));
+    let tokens = Parser::tokenize(String::from(" 313 +  2345  "));
     println!("{:?}", tokens);
-    let parsed_tree = parse(tokens);
+    let parsed_tree = Parser::parse(tokens);
     println!("{:?}", parsed_tree);
-    println!("{}", evaluate(parsed_tree));
+    println!("{}", Parser::evaluate(parsed_tree));
 }
