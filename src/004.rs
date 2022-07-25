@@ -1,4 +1,6 @@
 mod utils; use utils::*;
+mod arith; use arith::*;
+mod tree; use tree::*;
 use std::collections::vec_deque::IntoIter;
 
 /* STEP.4
@@ -92,12 +94,13 @@ fn prim(arith: &mut Arith, tokens: &mut IntoIter<Token>) -> Node {
 
         Token::Ope(o) => exit_with_report(format!("unexpected token: {}", o)),
         Token::PrimClose => exit_with_report("unexpected token: )"),
-        Token::Init => exit_with_report("exexpectedly found Init token"),
+        // Token::Init => exit_with_report("exexpectedly found Init token"),
     }
 }
 
 
 #[test]
+#[allow(non_snake_case)]
 fn input_1pl2_ml_3() {
     assert_eq!(
         Arith::evaluate(
@@ -111,6 +114,7 @@ fn input_1pl2_ml_3() {
     );
 }
 #[test]
+#[allow(non_snake_case)]
 fn input1pl__2pl3_ml4_ml5() {
     assert_eq!(
         Arith::evaluate(
@@ -124,6 +128,7 @@ fn input1pl__2pl3_ml4_ml5() {
     );
 }
 #[test]
+#[allow(non_snake_case)]
 fn input_1pl2pl3_ml_4pl5pl6() {
     assert_eq!(
         Arith::evaluate(
@@ -138,14 +143,14 @@ fn input_1pl2pl3_ml_4pl5pl6() {
 }
 
 fn main() { /* printing debug */
-    println!("\n(1+2)*3:\n{:?}",
+    println!("\n(1+2)*3:\n{}",
         Arith::parse(
             Arith::tokenize(
                 String::from("(1+2) * 3")
             )
         )
     );
-    println!("\n(1+2+3)*(4+5+6):\n{:?}",
+    println!("\n(1+2+3)*(4+5+6):\n{}",
         Arith::parse(
             Arith::tokenize(
                 String::from("(1+2+3) * (4+5+6)")
