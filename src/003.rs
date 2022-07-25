@@ -1,7 +1,8 @@
 mod utils; use utils::*;
 
 /* STEP.3
- * expr ::= 
+ * expr ::= prim (('+'|'-') prim)*
+ * prim ::= num | '(' expr ')'
  */
 
 impl Process for Parser {
