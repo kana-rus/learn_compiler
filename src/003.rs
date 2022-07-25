@@ -5,7 +5,7 @@ mod utils; use utils::*;
  * prim ::= num | '(' expr ')'
  */
 
-impl Process for Parser {
+impl Parse for Arith {
     fn parse(mut tokens: std::collections::vec_deque::IntoIter<Token>) -> Tree {
         let mut root = parse_prim(&mut tokens);
         while root.elem.is_init() && root.right.is_none() {
@@ -62,9 +62,9 @@ fn parse_prim(tokens: &mut std::collections::vec_deque::IntoIter<Token>) -> Node
 #[test]
 fn input1pl_2pl3_() {
     assert_eq!(
-        Parser::evaluate(
-            Parser::parse(
-                Parser::tokenize(
+        Arith::evaluate(
+            Arith::parse(
+                Arith::tokenize(
                     String::from("1 + (2 + 3)")
                 )
             )
@@ -75,9 +75,9 @@ fn input1pl_2pl3_() {
 #[test]
 fn input1pl_2pl_3pl4__() {
     assert_eq!(
-        Parser::evaluate(
-            Parser::parse(
-                Parser::tokenize(
+        Arith::evaluate(
+            Arith::parse(
+                Arith::tokenize(
                     String::from("1 + (2 + (3 + 4))")
                 )
             )
@@ -88,9 +88,9 @@ fn input1pl_2pl_3pl4__() {
 #[test]
 fn input_2_() {
     assert_eq!(
-        Parser::evaluate(
-            Parser::parse(
-                Parser::tokenize(
+        Arith::evaluate(
+            Arith::parse(
+                Arith::tokenize(
                     String::from("(2)")
                 )
             )
@@ -101,9 +101,9 @@ fn input_2_() {
 #[test]
 fn input__2__() {
     assert_eq!(
-        Parser::evaluate(
-            Parser::parse(
-                Parser::tokenize(
+        Arith::evaluate(
+            Arith::parse(
+                Arith::tokenize(
                     String::from("((2))")
                 )
             )
@@ -114,9 +114,9 @@ fn input__2__() {
 #[test]
 fn input_1pl2_() {
     assert_eq!(
-        Parser::evaluate(
-            Parser::parse(
-                Parser::tokenize(
+        Arith::evaluate(
+            Arith::parse(
+                Arith::tokenize(
                     String::from("(1 + 2)")
                 )
             )
@@ -127,9 +127,9 @@ fn input_1pl2_() {
 #[test]
 fn input1pl__2pl3_pl4pl5_() {
     assert_eq!(
-        Parser::evaluate(
-            Parser::parse(
-                Parser::tokenize(
+        Arith::evaluate(
+            Arith::parse(
+                Arith::tokenize(
                     String::from("1 + ((2 + 3) + 4 + 5)")
                 )
             )
@@ -140,43 +140,43 @@ fn input1pl__2pl3_pl4pl5_() {
 
 fn main() { /* printing debug */
     println!("\n1 + (2 + 3)...\n{:?}",
-        Parser::parse(
-            Parser::tokenize(
+        Arith::parse(
+            Arith::tokenize(
                 String::from("1 + (2 + 3)")
             )
         )
     );
     println!("\n1 + ( 2 + (3 + 4))...\n{:?}",
-        Parser::parse(
-            Parser::tokenize(
+        Arith::parse(
+            Arith::tokenize(
                 String::from("1 + ( 2 + (3 + 4))")
             )
         )
     );
     println!("\n(2)...\n{:?}",
-        Parser::parse(
-            Parser::tokenize(
+        Arith::parse(
+            Arith::tokenize(
                 String::from("(2)")
             )
         )
     );
     println!("\n((2))...\n{:?}",
-        Parser::parse(
-            Parser::tokenize(
+        Arith::parse(
+            Arith::tokenize(
                 String::from("(( 2))")
             )
         )
     );
     println!("\n(1 + 2)...\n{:?}",
-        Parser::parse(
-            Parser::tokenize(
+        Arith::parse(
+            Arith::tokenize(
                 String::from("(1 + 2)")
             )
         )
     );
     println!("\n1 + ((2 + 3) + 4 + 5)...\n{:?}",
-        Parser::parse(
-            Parser::tokenize(
+        Arith::parse(
+            Arith::tokenize(
                 String::from("1 + ((2 + 3) + 4 + 5)")
             )
         )

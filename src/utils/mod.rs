@@ -21,8 +21,10 @@ pub fn build_from(degits: &VecDeque<Int>) -> Int {
 }
 
 
-pub struct Parser;
-pub trait Process {
+pub struct Arith {
+    pub current: Token,
+}
+pub trait Parse {
 
 fn tokenize(input: String) -> IntoIter<Token> {
     let mut input = input.chars();
@@ -205,6 +207,7 @@ pub enum Elem {
 }
 #[derive(Debug)]
 pub enum Token {
+    Init,
     Num(Int),
     Ope(char),
     PrimOpen,
@@ -241,6 +244,7 @@ pub enum Token {
             Token::Ope(ope) => { println!("\"{}\" is not Num", ope); panic!(); },
             Token::PrimOpen => { println!("\"(\" is not Num"); panic!(); },
             Token::PrimClose => { println!("\")\" is not Num"); panic!(); },
+            Token::Init => exit_with_report("Init is not Num"),
         }
     }
     pub fn expect_ope(&self) -> char {
@@ -249,6 +253,7 @@ pub enum Token {
             Token::Num(num) => { println!("{} is not Ope", num); panic!(); },
             Token::PrimOpen => { println!("\"(\" is not Ope"); panic!(); },
             Token::PrimClose => { println!("\")\" is not Ope"); panic!(); },
+            Token::Init => exit_with_report("Init is not Num"),
         }
     }
 }
