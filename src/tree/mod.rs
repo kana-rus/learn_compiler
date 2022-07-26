@@ -1,4 +1,4 @@
-use crate::{exit_with_report, Int};
+use crate::utils::{exit_with_report, Int};
 mod tree_utils;
 
 pub type Link<T> = Option<Box<T>>;
@@ -15,7 +15,7 @@ pub struct Tree {
     pub fn new() -> Tree {
         Tree {
             root: Node {
-                elem: Elem::Num(0),
+                elem: Elem::Init,
                 left: None,
                 right: None
             }
@@ -60,7 +60,7 @@ pub struct Node {
 pub enum Elem {
     Init,
     Num(Int),
-    Ope(char),
+    Ope(&'static str),
 } impl Elem {
     #[allow(unused)]
     pub fn is_init(&self) -> bool {
@@ -93,7 +93,7 @@ pub enum Elem {
         }
     }
     #[allow(unused)]
-    pub fn unwrap_ope(self) -> char {
+    pub fn unwrap_ope(self) -> &'static str {
         match self {
             Elem::Num(num) => {println!("{} is not Ope", num); panic!();},
             Elem::Ope(operator) => operator,
@@ -105,7 +105,7 @@ pub enum Elem {
 pub enum Token {
     // Init,
     Num(Int),
-    Ope(char),
+    Ope(&'static str),
     PrimOpen,
     PrimClose,
 } impl Token {
@@ -149,7 +149,7 @@ pub enum Token {
         }
     }
     #[allow(unused)]
-    pub fn expect_ope(&self) -> char {
+    pub fn expect_ope(&self) -> &'static str {
         match self {
             Token::Ope(operator) => *operator,
             Token::Num(num) => { println!("{} is not Ope", num); panic!(); },

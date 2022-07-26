@@ -1,5 +1,5 @@
 use crate::utils::exit_with_report;
-use super::{Tree, Node, Elem};
+use super::{Tree, Node, Elem, Token};
 use std::fmt::Display;
 
 
@@ -9,6 +9,17 @@ impl Display for Elem {
             Elem::Init => exit_with_report("found remaining Init elem"),
             Elem::Num(n) => format!("Num({})", n),
             Elem::Ope(o) => format!("Ope({})", o),
+        })
+    }
+}
+
+impl Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", match self {
+            Token::PrimOpen => String::from("PrimOpen"),
+            Token::PrimClose => String::from("PrimClose"),
+            Token::Num(n) => format!("Num({})", n),
+            Token::Ope(o) => format!("Ope({})", o),
         })
     }
 }

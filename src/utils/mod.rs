@@ -3,7 +3,7 @@ use std::{fmt::Display ,collections::vec_deque::VecDeque};
 pub type Int = u32;
 
 
-pub fn assert(condition: bool, message: &str) {
+pub fn assert<D: Display>(condition: bool, message: D) {
     if !condition {
         println!("{}", message);
         panic!();
